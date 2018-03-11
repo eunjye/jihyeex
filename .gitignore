@@ -10,7 +10,3 @@ node_modules
 # 임시 파일
 *.tmp
 *~
-
-# ES5 폴더
-dist/
-public/dist

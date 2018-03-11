@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>슬라이드</title>
+    <style>
+        body{padding:100px;}
+        ul, li{box-sizing:border-box; list-style-type:none; padding:0; margin:0;}
+        ul{position:relative; overflow:hidden; width:500px; height:50px; background:pink;}
+        li{position:absolute; top:50px; width:480px; height:50px; padding:10px; margin:0 10px; border:1px solid black; background:#e0e0e0;}
+        li:first-of-type{top:0;}
+        button{margin-top:500px;}
+    </style>
+</head>
+<body>
+ 
+    <ul id="list" data="sa">
+        <li>01</li>
+        <li>02</li>
+        <li>03</li>
+        <li>04</li>
+        <li>05</li>
+        <li>06</li>
+        <li>07</li>
+        <li>08</li>
+        <li>09</li>
+        <li>10</li>
+    </ul>
+    <button id="prev">이전</button>
+    <button id="next">다음</button>
+    <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+<script>
+    var list = document.getElementById("list");
+    var length = list.getElementsByTagName("li").length;
+    var slide = [];
+    $("#list").find("li").each(function (index, item) {
+        slide[index] = $(this);
+    })
+    var height = slide[0].outerHeight();
+    var n = 0;
+    function slideAni(){    //슬라이드 애니메이션
+        slide[n].css("top", "0").stop().animate({
+                top: "-=" + height + "px"
+            }, 400);
+            if (n == length - 1) {
+                slide[0].css("top", height + "px").stop().animate({top: "-=" + height + "px"}, 400);
+                n = 0;
+            } else {
+                slide[n + 1].css("top", height + "px").stop().animate({top: "-=" + height + "px"}, 400);
+                n++;
+            }
+    }
+    function resetSlide(){    //setInterval 초기화 및 재실행
+        for(i=0; i<9999; i++){
+                window.clearInterval(i);
+        }
+        setTimeout(function(){
+            setInterval("slideAni()",2000);
+        }, 500);
+    }
+    $(setInterval("slideAni()",2000));
+
+    $("#prev").click(function(){    //이전 버튼
+            console.log(n);
+            slide[n].css("top","0").stop().animate({top:"+="+height+"px"},400);
+            if(n == 0){
+                slide[length-1].css("top",-height+"px").stop().animate({top:"+="+height+"px"},400); 
+                n = length-1;
+            }else{
+                slide[n-1].css("top",-height+"px").stop().animate({top:"+="+height+"px"},400);
+                n--;
+            }
+            resetSlide();
+        })
+        $("#next").click(function(){    //다음 버튼
+            console.log(n);
+            slide[n].css("top","0").stop().animate({top:"-="+height+"px"},400);
+            if(n == length-1){
+                slide[0].css("top",height+"px").stop().animate({top:"-="+height+"px"},400); 
+                n = 0;
+            }else{
+                slide[n+1].css("top",height+"px").stop().animate({top:"-="+height+"px"},400);
+                n++;
+            }
+            resetSlide();
+        })
+</script>
+</body>
+
+</html>

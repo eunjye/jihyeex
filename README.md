@@ -1,5 +1,11 @@
-= Learning JavaScript, 3rd Edition
-== Chapter 2: JavaScript Development Tools
+지혜의 자바스크립트 공부방
+===
 
-In this chapter we're learning about Git and other
-development tools.
+## 별게 없다.
+그냥 하면 된다.
+재미가 있을 수도 있고
+없을 수도 있고
+유익할 수도 있고
+아닐 수도 있는데
+**아무튼 공부방임.**
+*깔깔깔*
