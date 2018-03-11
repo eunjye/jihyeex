@@ -65,7 +65,6 @@
     $(setInterval("slideAni()",2000));
 
     $("#prev").click(function(){    //이전 버튼
-            console.log(n);
             slide[n].css("top","0").stop().animate({top:"+="+height+"px"},400);
             if(n == 0){
                 slide[length-1].css("top",-height+"px").stop().animate({top:"+="+height+"px"},400); 
@@ -77,7 +76,6 @@
             resetSlide();
         })
         $("#next").click(function(){    //다음 버튼
-            console.log(n);
             slide[n].css("top","0").stop().animate({top:"-="+height+"px"},400);
             if(n == length-1){
                 slide[0].css("top",height+"px").stop().animate({top:"-="+height+"px"},400); 
