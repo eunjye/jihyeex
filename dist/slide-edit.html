@@ -9,7 +9,6 @@
         ul{position:relative; overflow:hidden; width:500px; height:50px; background:pink;}
         li{display:none; position:absolute; top:50px; width:480px; height:50px; margin:0 10px; border:1px solid black; background:#e0e0e0;}
         li:first-of-type{display:block; top:0;}
-        li.show{display:block;}
         button{margin-top:200px;}
         #list a{ display: block; height: 50px; padding:10px;}
         .list-controlls{margin-top:20px;}
@@ -59,14 +58,21 @@
                 $(".list-controlls").append($a);
             }
         },
+        hideSlide : function(){     //display:none 시켜주기
+            setTimeout(function(){
+                $.each(sld.slide, function(){
+                if ($(this).css('top') == sld.height+"px" || $(this).css('top') == -sld.height+"px" ){
+                    $(this).hide();
+                }
+            });
+            }, 450);
+        },
         resetSlide: function (clear) {    //setInterval 초기화 및 재실행
             if (clear == true && sld.startAni != null) {
                 window.clearInterval(sld.startAni);
             }
             sld.startAni = setInterval(function () {
-                
-                
-                sld.slide[sld.n].addClass("show").css("top", "0").stop().animate({
+                sld.slide[sld.n].css("display","block").css("top", "0").stop().animate({
                     top: "-=" + sld.height + "px"
                 }, 400);
                 if (sld.n == sld.length - 1) {
@@ -76,6 +82,7 @@
                     sld.slide[sld.n + 1].css("display","block").css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
                     sld.n++;
                 }
+                sld.hideSlide();
             }, 2000);
         },
         prevSlide: function (skip) {    //이전으로 가기
@@ -96,6 +103,7 @@
                 sld.play = 1;
                 $("#stop").text("일시중지");
             }
+            sld.hideSlide();
             sld.resetSlide(true);
         },
         nextSlide: function (skip) {     //다음으로 가기
@@ -112,6 +120,7 @@
                 sld.slide[skip].css("display","block").css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
                 sld.n = skip;
             }
+            sld.hideSlide();
             sld.resetSlide(true);
             if (sld.play == 0) {
                 sld.play = 1;
@@ -128,6 +137,7 @@
                 btnStop.text("일시중지");
                 sld.resetSlide(true);
             }
+            sld.hideSlide();
         },
         controlSlide: function (control) {
             var go = control.attr("class") - 1;
