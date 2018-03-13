@@ -13,36 +13,36 @@
         #list a{ display: block; height: 50px; padding:10px;}
         .list-controlls{margin-top:20px;}
         .list-controlls::after{display:block; height:0; clear:both; content:""; }
-        .list-controlls a{float:left; display:block; width:10px; height:10px; margin:5px; background:blue; border-radius:5px; cursor:pointer;}
+        .list-controlls a{float:left; display:block; width:10px; height:10px; margin:5px; background:blue; border-radius:5px; cursor:pointer; font-size:200px; overflow:hidden;}
+        .list-controlls .control-on{background: red}
+        
     </style>
 </head>
 <body>
  	<div class="list-wrap">
 	    <ul id="list">
-	        <li id="list1"><a href="#">01</a></li>
-	        <li id="list2"><a href="#">02</a></li>
-	        <li id="list3"><a href="#">03</a></li>
-	        <li id="list4"><a href="#">04</a></li>
-	        <li id="list5"><a href="#">05</a></li>
-	        <li id="list6"><a href="#">06</a></li>
-	        <li id="list7"><a href="#">07</a></li>
-	        <li id="list8"><a href="#">08</a></li>
-	        <li id="list9"><a href="#">09</a></li>
-            <li id="list10"><a href="#">10</a></li>
-            <li id="list11"><a href="#">11</a></li>
-            <li id="list12"><a href="#">12</a></li>
-            <li id="list13"><a href="#">13</a></li>
+	        <li><a href="#">01</a></li>
+	        <li><a href="#">02</a></li>
+	        <li><a href="#">03</a></li>
+	        <li><a href="#">04</a></li>
+	        <li><a href="#">05</a></li>
+	        <li><a href="#">06</a></li>
+	        <li><a href="#">07</a></li>
+	        <li><a href="#">08</a></li>
+	        <li><a href="#">09</a></li>
+            <li><a href="#">10</a></li>
 	    </ul>
         <div class="list-controlls"></div>
         <div class="list-buttons">
-            <button id="prev">이전</button>
-            <button id="next">다음</button>
-            <button id="stop">일시중지</button>
+            <button type="button" id="prev">이전</button>
+            <button type="button" id="next">다음</button>
+            <button type="button" id="stop">일시중지</button>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <script>
     var sld = {
+        $stop : $("#stop"),
         length: $("#list li").length,
         slide: [],
         height: 0,
@@ -55,83 +55,75 @@
         n: 0,   //0~9까지 (index값이라고 생각)
         startAni: null,
         play: 1,
-        setControl: function () {
-            for (var i = 1; i <= sld.length; i++) {	// controlls 생성
-                var $a = $('<a class="control' + i + '" title="'+i+'번째 슬라이드로 이동" onclick="sld.controlSlide($(this))" href="#slide' + i + '" data="' + i + '"></a>');
+        setControl: function () {	// controlls 생성
+            for (var i = 1; i <= sld.length; i++) {
+                var $a = $('<a class="control control' + i + '" data="' + i + '">'+i+'번째 슬라이드로 이동</a>');
                 $(".list-controlls").append($a);
             }
         },
-        hideSlide : function(){     //display:none 시켜주기 및 controller 색상 변환
+        hideSlide : function(){     //hide() 시켜주기
             setTimeout(function(){
                 $.each(sld.slide, function(index){
-                if ($(this).css('top') == sld.height+"px" || $(this).css('top') == -sld.height+"px" ){
-                    $(this).hide();
-                }
-            });
+                    if ($(this).css('top') == sld.height+"px" || $(this).css('top') == -sld.height+"px" ){
+                        $(this).hide();
+                    }
+                });
             }, 450);
         },
         resetSlide: function (clear) {    //setInterval 초기화 및 재실행
             if (clear == true && sld.startAni != null) {
-                window.clearInterval(sld.startAni);
+                clearInterval(sld.startAni);
             }
-            $(".list-controlls a").css("background","blue");
-            $(".control"+(sld.n+1)).css("background","red");
             sld.startAni = setInterval(function () {
-                $(".list-controlls a").css("background","blue");
-                $(".control"+(sld.n+2)).css("background","red");
-                sld.slide[sld.n].css("display","block").css("top", "0").stop().animate({
+                $(".control").removeClass("control-on");  // 활성화 컨트롤 지우기
+                sld.slide[sld.n].show().css("top", "0").stop().animate({
                     top: "-=" + sld.height + "px"
                 }, 400);
-                if (sld.n == sld.length - 1) {
-                    sld.slide[0].css("display","block").css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
-                    sld.n = 0;
-                } else {
-                    sld.slide[sld.n + 1].css("display","block").css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
-                    sld.n++;
-                }
+                sld.nextAni();
                 sld.hideSlide();
             }, 2000);
         },
+        nextAni: function () {
+            sld.n = (sld.n == sld.length-1) ? -1 : sld.n;
+            $(".control" + (sld.n + 2)).addClass("control-on");   // 다음 (이번에 올라오는) 컨트롤 활성화
+            sld.slide[sld.n + 1].show().css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
+            sld.n++;
+        },
         prevSlide: function (skip) {    //이전으로 가기
-            sld.slide[sld.n].css("display","block").css("top", "0").stop().animate({ top: "+=" + sld.height + "px" }, 400);
+            $(".control").removeClass("control-on");  // 활성화 컨트롤 지우기
+            sld.slide[sld.n].show().css("top", "0").stop().animate({ top: "+=" + sld.height + "px" }, 400);
             if (skip == undefined) {    // control 안눌렀을 때
-                if (sld.n == 0) {
-                    sld.slide[sld.length - 1].css("display","block").css("top", -sld.height + "px").stop().animate({ top: "+=" + sld.height + "px" }, 400);
-                    sld.n = sld.length - 1;
-                } else {
-                    sld.slide[sld.n - 1].css("display","block").css("top", -sld.height + "px").stop().animate({ top: "+=" + sld.height + "px" }, 400);
-                    sld.n--;
-                }
+                sld.n = (sld.n == 0) ? sld.length : sld.n;
+                $(".control" + sld.n).addClass("control-on");   // 이전 (이번에 내려오는) 컨트롤 활성화
+                sld.slide[sld.n - 1].show().css("top", -sld.height + "px").stop().animate({ top: "+=" + sld.height + "px" }, 400);
+                sld.n--;
             } else {
-                sld.slide[skip].css("display","block").css("top", -sld.height + "px").stop().animate({ top: "+=" + sld.height + "px" }, 400);
+                $(".control" + (skip+1)).addClass("control-on");   // 이전 (이번에 내려오는) 컨트롤 활성화
+                sld.slide[skip].show().css("top", -sld.height + "px").stop().animate({ top: "+=" + sld.height + "px" }, 400);
                 sld.n = skip;
             }
             if (sld.play == 0) {
                 sld.play = 1;
-                $("#stop").text("일시중지");
+                sld.$stop.text("일시중지");
             }
             sld.hideSlide();
             sld.resetSlide(true);
         },
         nextSlide: function (skip) {     //다음으로 가기
-            sld.slide[sld.n].css("display","block").css("top", "0").stop().animate({ top: "-=" + sld.height + "px" }, 400);
+            $(".control").removeClass("control-on");  // 활성화 컨트롤 지우기
+            sld.slide[sld.n].show().css("top", "0").stop().animate({ top: "-=" + sld.height + "px" }, 400);
             if (skip == undefined) {
-                if (sld.n == sld.length - 1) {
-                    sld.slide[0].css("display","block").css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
-                    sld.n = 0;
-                } else if (sld.n != sld.length - 1) {
-                    sld.slide[sld.n + 1].css("display","block").css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
-                    sld.n++;
-                }
+                sld.nextAni();
             } else {  //control 눌렀을 때(가고자 하는 페이지 있을 때)
-                sld.slide[skip].css("display","block").css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
+                $(".control" + (skip+1)).addClass("control-on");   // 이전 (이번에 올라오는) 컨트롤 활성화
+                sld.slide[skip].show().css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
                 sld.n = skip;
             }
             sld.hideSlide();
             sld.resetSlide(true);
             if (sld.play == 0) {        //멈춰있을 때
                 sld.play = 1;
-                $("#stop").text("일시중지");
+                sld.$stop.text("일시중지");
             }
         },
         toggleSlide: function (btnStop) {
@@ -162,23 +154,23 @@
             sld.setControl();
             sld.addIndex();
             sld.resetSlide(false);
+            $("#prev").click(function () {  //이전 버튼
+                sld.prevSlide();
+            })
+
+            $("#next").click(function () {    //다음 버튼
+                sld.nextSlide();
+            })
+            $("#stop").click(function () {  //중지 버튼
+                sld.toggleSlide($(this));
+            })
+            $(".list-controlls a").click(function () {
+                sld.controlSlide($(this).attr("data"));
+            });
         }
     }
-    $("#prev").click(function () {  //이전 버튼
-        sld.prevSlide();
-    })
-
-    $("#next").click(function () {    //다음 버튼
-        sld.nextSlide();
-    })
-    $("#stop").click(function () {
-        sld.toggleSlide($(this));
-    })
-
+    
     sld.init();
-    $(".list-controlls a").click(function () {
-        sld.controlSlide($(this).attr("data"));
-    });
 </script>
 
 
