@@ -28,7 +28,10 @@
 	        <li id="list7"><a href="#">07</a></li>
 	        <li id="list8"><a href="#">08</a></li>
 	        <li id="list9"><a href="#">09</a></li>
-	        <li id="list10"><a href="#">10</a></li>
+            <li id="list10"><a href="#">10</a></li>
+            <li id="list11"><a href="#">11</a></li>
+            <li id="list12"><a href="#">12</a></li>
+            <li id="list13"><a href="#">13</a></li>
 	    </ul>
         <div class="list-controlls"></div>
         <div class="list-buttons">
@@ -44,7 +47,7 @@
         slide: [],
         height: 0,
         addIndex: function () {  // 슬라이드 배열 선언
-            $("#list").find("li").each(function (index, item) {
+            $("#list li").each(function (index, item) {
                 sld.slide[index] = $(this);
             });
             sld.height = sld.slide[0].outerHeight();
@@ -54,13 +57,13 @@
         play: 1,
         setControl: function () {
             for (var i = 1; i <= sld.length; i++) {	// controlls 생성
-                var $a = $('<a class="' + i + '" title="'+i+'번째 슬라이드로 이동" onclick="sld.controlSlide($(this))" href="#slide' + i + '"></a>');
+                var $a = $('<a class="control' + i + '" title="'+i+'번째 슬라이드로 이동" onclick="sld.controlSlide($(this))" href="#slide' + i + '" data="' + i + '"></a>');
                 $(".list-controlls").append($a);
             }
         },
-        hideSlide : function(){     //display:none 시켜주기
+        hideSlide : function(){     //display:none 시켜주기 및 controller 색상 변환
             setTimeout(function(){
-                $.each(sld.slide, function(){
+                $.each(sld.slide, function(index){
                 if ($(this).css('top') == sld.height+"px" || $(this).css('top') == -sld.height+"px" ){
                     $(this).hide();
                 }
@@ -71,7 +74,11 @@
             if (clear == true && sld.startAni != null) {
                 window.clearInterval(sld.startAni);
             }
+            $(".list-controlls a").css("background","blue");
+            $(".control"+(sld.n+1)).css("background","red");
             sld.startAni = setInterval(function () {
+                $(".list-controlls a").css("background","blue");
+                $(".control"+(sld.n+2)).css("background","red");
                 sld.slide[sld.n].css("display","block").css("top", "0").stop().animate({
                     top: "-=" + sld.height + "px"
                 }, 400);
@@ -122,7 +129,7 @@
             }
             sld.hideSlide();
             sld.resetSlide(true);
-            if (sld.play == 0) {
+            if (sld.play == 0) {        //멈춰있을 때
                 sld.play = 1;
                 $("#stop").text("일시중지");
             }
@@ -140,7 +147,7 @@
             sld.hideSlide();
         },
         controlSlide: function (control) {
-            var go = control.attr("class") - 1;
+            var go = control - 1;
             if (sld.n == go) {  //현재 페이지와 같은 control 누르면
                 sld.resetSlide(true)    //멈췄다가 시작
             } else {     //다른 control 누르면
@@ -170,7 +177,7 @@
 
     sld.init();
     $(".list-controlls a").click(function () {
-        sld.controlSlide($(this));
+        sld.controlSlide($(this).attr("data"));
     });
 </script>
 
