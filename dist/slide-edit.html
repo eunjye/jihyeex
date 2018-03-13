@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="UTF-8"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>슬라이드</title>
+    <style>
+        body{padding:100px;}
+        ul, li, a{box-sizing:border-box; list-style-type:none; padding:0; margin:0;}
+        ul{position:relative; overflow:hidden; width:500px; height:50px; background:pink;}
+        li{display:none; position:absolute; top:50px; width:480px; height:50px; margin:0 10px; border:1px solid black; background:#e0e0e0;}
+        li:first-of-type{display:block; top:0;}
+        li.show{display:block;}
+        button{margin-top:200px;}
+        #list a{ display: block; height: 50px; padding:10px;}
+        .list-controlls{margin-top:20px;}
+        .list-controlls::after{display:block; height:0; clear:both; content:""; }
+        .list-controlls a{float:left; display:block; width:10px; height:10px; margin:5px; background:blue; border-radius:5px; cursor:pointer;}
+    </style>
+</head>
+<body>
+ 	<div class="list-wrap">
+	    <ul id="list">
+	        <li id="list1"><a href="#">01</a></li>
+	        <li id="list2"><a href="#">02</a></li>
+	        <li id="list3"><a href="#">03</a></li>
+	        <li id="list4"><a href="#">04</a></li>
+	        <li id="list5"><a href="#">05</a></li>
+	        <li id="list6"><a href="#">06</a></li>
+	        <li id="list7"><a href="#">07</a></li>
+	        <li id="list8"><a href="#">08</a></li>
+	        <li id="list9"><a href="#">09</a></li>
+	        <li id="list10"><a href="#">10</a></li>
+	    </ul>
+        <div class="list-controlls"></div>
+        <div class="list-buttons">
+            <button id="prev">이전</button>
+            <button id="next">다음</button>
+            <button id="stop">일시중지</button>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script>
+    var sld = {
+        length: $("#list li").length,
+        slide: [],
+        height: 0,
+        addIndex: function () {  // 슬라이드 배열 선언
+            $("#list").find("li").each(function (index, item) {
+                sld.slide[index] = $(this);
+            });
+            sld.height = sld.slide[0].outerHeight();
+        },
+        n: 0,   //0~9까지 (index값이라고 생각)
+        startAni: null,
+        play: 1,
+        setControl: function () {
+            for (var i = 1; i <= sld.length; i++) {	// controlls 생성
+                var $a = $('<a class="' + i + '" title="'+i+'번째 슬라이드로 이동" onclick="sld.controlSlide($(this))" href="#slide' + i + '"></a>');
+                $(".list-controlls").append($a);
+            }
+        },
+        resetSlide: function (clear) {    //setInterval 초기화 및 재실행
+            if (clear == true && sld.startAni != null) {
+                window.clearInterval(sld.startAni);
+            }
+            sld.startAni = setInterval(function () {
+                
+                
+                sld.slide[sld.n].addClass("show").css("top", "0").stop().animate({
+                    top: "-=" + sld.height + "px"
+                }, 400);
+                if (sld.n == sld.length - 1) {
+                    sld.slide[0].css("display","block").css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
+                    sld.n = 0;
+                } else {
+                    sld.slide[sld.n + 1].css("display","block").css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
+                    sld.n++;
+                }
+            }, 2000);
+        },
+        prevSlide: function (skip) {    //이전으로 가기
+            sld.slide[sld.n].css("display","block").css("top", "0").stop().animate({ top: "+=" + sld.height + "px" }, 400);
+            if (skip == undefined) {    // control 안눌렀을 때
+                if (sld.n == 0) {
+                    sld.slide[sld.length - 1].css("display","block").css("top", -sld.height + "px").stop().animate({ top: "+=" + sld.height + "px" }, 400);
+                    sld.n = sld.length - 1;
+                } else {
+                    sld.slide[sld.n - 1].css("display","block").css("top", -sld.height + "px").stop().animate({ top: "+=" + sld.height + "px" }, 400);
+                    sld.n--;
+                }
+            } else {
+                sld.slide[skip].css("display","block").css("top", -sld.height + "px").stop().animate({ top: "+=" + sld.height + "px" }, 400);
+                sld.n = skip;
+            }
+            if (sld.play == 0) {
+                sld.play = 1;
+                $("#stop").text("일시중지");
+            }
+            sld.resetSlide(true);
+        },
+        nextSlide: function (skip) {     //다음으로 가기
+            sld.slide[sld.n].css("display","block").css("top", "0").stop().animate({ top: "-=" + sld.height + "px" }, 400);
+            if (skip == undefined) {
+                if (sld.n == sld.length - 1) {
+                    sld.slide[0].css("display","block").css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
+                    sld.n = 0;
+                } else if (sld.n != sld.length - 1) {
+                    sld.slide[sld.n + 1].css("display","block").css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
+                    sld.n++;
+                }
+            } else {  //control 눌렀을 때(가고자 하는 페이지 있을 때)
+                sld.slide[skip].css("display","block").css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
+                sld.n = skip;
+            }
+            sld.resetSlide(true);
+            if (sld.play == 0) {
+                sld.play = 1;
+                $("#stop").text("일시중지");
+            }
+        },
+        toggleSlide: function (btnStop) {
+            if (sld.play == 1) {
+                sld.play = 0;
+                window.clearInterval(sld.startAni);
+                btnStop.text("다시 재생");
+            } else {	//멈춰있을 때
+                sld.play = 1;
+                btnStop.text("일시중지");
+                sld.resetSlide(true);
+            }
+        },
+        controlSlide: function (control) {
+            var go = control.attr("class") - 1;
+            if (sld.n == go) {  //현재 페이지와 같은 control 누르면
+                sld.resetSlide(true)    //멈췄다가 시작
+            } else {     //다른 control 누르면
+                if (sld.n < go) {   //현재보다 후 페이지일 시
+                    sld.nextSlide(go);
+                } else if (sld.n > go) {   //현재보다 전 페이지일 시
+                    sld.prevSlide(go);
+                }
+            };
+        },
+        init: function () {
+            sld.setControl();
+            sld.addIndex();
+            sld.resetSlide(false);
+        }
+    }
+    $("#prev").click(function () {  //이전 버튼
+        sld.prevSlide();
+    })
+
+    $("#next").click(function () {    //다음 버튼
+        sld.nextSlide();
+    })
+    $("#stop").click(function () {
+        sld.toggleSlide($(this));
+    })
+
+    sld.init();
+    $(".list-controlls a").click(function () {
+        sld.controlSlide($(this));
+    });
+</script>
+
+
+</body></html>

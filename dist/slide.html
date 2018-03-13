@@ -1,68 +1,75 @@
 <!DOCTYPE html>
-<html lang="UTF-8">
-<head>
+<html lang="UTF-8"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>슬라이드</title>
     <style>
         body{padding:100px;}
-        ul, li{box-sizing:border-box; list-style-type:none; padding:0; margin:0;}
+        ul, li, a{box-sizing:border-box; list-style-type:none; padding:0; margin:0;}
         ul{position:relative; overflow:hidden; width:500px; height:50px; background:pink;}
-        li{position:absolute; top:50px; width:480px; height:50px; padding:10px; margin:0 10px; border:1px solid black; background:#e0e0e0;}
+        li{position:absolute; top:50px; width:480px; height:50px; margin:0 10px; border:1px solid black; background:#e0e0e0;}
         li:first-of-type{top:0;}
-        button{margin-top:500px;}
+        button{margin-top:200px;}
+        #list a{ display: block; height: 50px; padding:10px;}
+        .list-controlls{margin-top:20px;}
+        .list-controlls::after{display:block; height:0; clear:both; content:""; }
+        .list-controlls a{position:absolute; float:left; display:block; width:10px; height:10px; margin:5px; background:blue; border-radius:5px;}
     </style>
 </head>
 <body>
- 
-    <ul id="list" data="sa">
-        <li>01</li>
-        <li>02</li>
-        <li>03</li>
-        <li>04</li>
-        <li>05</li>
-        <li>06</li>
-        <li>07</li>
-        <li>08</li>
-        <li>09</li>
-        <li>10</li>
-    </ul>
-    <button id="prev">이전</button>
-    <button id="next">다음</button>
-    <script
-  src="https://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
+ 	<div class="list-wrap">
+	    <ul id="list">
+	        <li id="list1" style="top: -50px;"><a href="1">01</a></li>
+	        <li id="list2" style="top: -50px;"><a href="2">02</a></li>
+	        <li id="list3" style="top: -50px;"><a href="3">03</a></li>
+	        <li id="list4" style="top: -50px;"><a href="4">04</a></li>
+	        <li id="list5" style="top: -50px;"><a href="5">05</a></li>
+	        <li id="list6" style="top: 0px;"><a href="6">06</a></li>
+	        <li id="list7" style="top: -50px;"><a href="7">07</a></li>
+	        <li id="list8" style="top: -50px;"><a href="8">08</a></li>
+	        <li id="list9" style="top: -50px;"><a href="9">09</a></li>
+	    </ul>
+    </div>
+    <div class="list-controlls">
+    <a href="#list1" class="1" style="left:0px"></a><a href="#list2" class="2" style="left:20px"></a><a href="#list3" class="3" style="left:40px"></a><a href="#list4" class="4" style="left:60px"></a><a href="#list5" class="5" style="left:80px"></a><a href="#list6" class="6" style="left:100px"></a><a href="#list7" class="7" style="left:120px"></a><a href="#list8" class="8" style="left:140px"></a><a href="#list9" class="9" style="left:160px"></a><a href="#list10" class="10" style="left:180px"></a></div>
+    <div class="list-buttons">
+	    <button id="prev">이전</button>
+	    <button id="next">다음</button>
+	    <button id="stop">일시중지</button>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <script>
-    var list = document.getElementById("list");
-    var length = list.getElementsByTagName("li").length;
+    var length = $("#list li").length;
     var slide = [];
     $("#list").find("li").each(function (index, item) {
         slide[index] = $(this);
     })
     var height = slide[0].outerHeight();
     var n = 0;
-    function slideAni(){    //슬라이드 애니메이션
-        slide[n].css("top", "0").stop().animate({
-                top: "-=" + height + "px"
-            }, 400);
-            if (n == length - 1) {
-                slide[0].css("top", height + "px").stop().animate({top: "-=" + height + "px"}, 400);
-                n = 0;
-            } else {
-                slide[n + 1].css("top", height + "px").stop().animate({top: "-=" + height + "px"}, 400);
-                n++;
-            }
-    }
-    function resetSlide(){    //setInterval 초기화 및 재실행
-        for(i=0; i<9999; i++){
-                window.clearInterval(i);
+    var startAni = null;
+    var play = 1;
+    
+    
+    
+    function resetSlide(clear){    //setInterval 초기화 및 재실행
+        if(clear==true && startAni != null){
+        		window.clearInterval(startAni);		//너무 빠르게 누르면 클리어가 다 안됨
         }
-        setTimeout(function(){
-            setInterval("slideAni()",2000);
-        }, 500);
+            startAni = setInterval(function(){
+
+        console.log(n);
+            	slide[n].css("top", "0").stop().animate({
+                    top: "-=" + height + "px"
+                }, 400);
+                if (n == length - 1) {
+                    slide[0].css("top", height + "px").stop().animate({top: "-=" + height + "px"}, 400);
+                    n = 0;
+                } else {
+                    slide[n + 1].css("top", height + "px").stop().animate({top: "-=" + height + "px"}, 400);
+                    n++;
+                }
+            },2000);
     }
-    $(setInterval("slideAni()",2000));
 
     $("#prev").click(function(){    //이전 버튼
             slide[n].css("top","0").stop().animate({top:"+="+height+"px"},400);
@@ -73,9 +80,14 @@
                 slide[n-1].css("top",-height+"px").stop().animate({top:"+="+height+"px"},400);
                 n--;
             }
-            resetSlide();
+            if(play==0){
+                play = 1;
+                $("#stop").text("일시중지");
+            }
+            resetSlide(true);
         })
         $("#next").click(function(){    //다음 버튼
+        	function nextAni(){
             slide[n].css("top","0").stop().animate({top:"-="+height+"px"},400);
             if(n == length-1){
                 slide[0].css("top",height+"px").stop().animate({top:"-="+height+"px"},400); 
@@ -84,9 +96,29 @@
                 slide[n+1].css("top",height+"px").stop().animate({top:"-="+height+"px"},400);
                 n++;
             }
-            resetSlide();
+            if(play==0){
+                play = 1;
+                $("#stop").text("일시중지");
+            }
+            resetSlide(true);
+        }
+        nextAni();
         })
+        $("#stop").click(function(){
+        	if (play == 1){
+        		play = 0;
+            	window.clearInterval(startAni);
+            	$(this).text("다시 재생");
+        	}else{	//멈춰있을 때
+        		play = 1;
+        	 	$(this).text("일시중지");
+        	 	resetSlide(true);
+        	}
+        })
+ 
+    
+    resetSlide(false);
 </script>
-</body>
 
-</html>
+
+</body></html>
