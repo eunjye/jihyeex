@@ -75,7 +75,6 @@
                 clearInterval(sld.startAni);
             }
             sld.startAni = setInterval(function () {
-                $(".control").removeClass("control-on");  // 활성화 컨트롤 지우기
                 sld.slide[sld.n].show().css("top", "0").stop().animate({
                     top: "-=" + sld.height + "px"
                 }, 400);
@@ -84,31 +83,33 @@
             }, 2000);
         },
         nextAni: function () {
-            sld.n = (sld.n == sld.length-1) ? -1 : sld.n;
-            $(".control" + (sld.n + 2)).addClass("control-on");   // 다음 (이번에 올라오는) 컨트롤 활성화
-            sld.slide[sld.n + 1].show().css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
-            sld.n++;
+            var n = sld.n;
+            n = (n == sld.length-1) ? -1 : n;
+            $(".control").removeClass("control-on");  // 활성화 컨트롤 지우기
+            $(".control" + (n + 2)).addClass("control-on");   // 다음 (이번에 올라오는) 컨트롤 활성화
+            sld.slide[n + 1].show().css("top", sld.height + "px").stop().animate({ top: "-=" + sld.height + "px" }, 400);
+            n++;
+            sld.n = n;
         },
         prevSlide: function (skip) {    //이전으로 가기
-            var slide = sld.slide, height = sld.height;
+            var slide = sld.slide, height = sld.height, n = sld.n;
             $(".control").removeClass("control-on");  // 활성화 컨트롤 지우기
-            slide[sld.n].show().css("top", "0").stop().animate({ top: "+=" + height + "px" }, 400);
+            slide[n].show().css("top", "0").stop().animate({ top: "+=" + height + "px" }, 400);
             if (skip == undefined) {    // control 안눌렀을 때
-                sld.n = (sld.n == 0) ? sld.length : sld.n;
-                $(".control" + sld.n).addClass("control-on");   // 이전 (이번에 내려오는) 컨트롤 활성화
-                slide[sld.n - 1].show().css("top", -height + "px").stop().animate({ top: "+=" + height + "px" }, 400);
-                sld.n--;
-            } else {
-                $(".control" + (skip+1)).addClass("control-on");   // 이전 (이번에 내려오는) 컨트롤 활성화
-                slide[skip].show().css("top", -height + "px").stop().animate({ top: "+=" + height + "px" }, 400);
-                sld.n = skip;
+                n = (n == 0) ? sld.length : n;
+            } else {    //control 눌렀을 때
+                n = skip+1;
             }
+            $(".control" + n).addClass("control-on");   // 이전 (이번에 내려오는) 컨트롤 활성화
+                slide[n - 1].show().css("top", -height + "px").stop().animate({ top: "+=" + height + "px" }, 400);
+            n--;
             if (sld.play == 0) {
                 sld.play = 1;
                 sld.$stop.text("일시중지");
             }
             sld.hideSlide();
             sld.resetSlide(true);
+            sld.n = n;
         },
         nextSlide: function (skip) {     //다음으로 가기
             var slide = sld.slide, height = sld.height;
