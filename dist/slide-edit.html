@@ -13,7 +13,7 @@
         #list a{ display: block; height: 50px; padding:10px;}
         .list-controlls{margin-top:20px;}
         .list-controlls::after{display:block; height:0; clear:both; content:""; }
-        .list-controlls a{float:left; display:block; width:10px; height:10px; margin:5px; background:blue; border-radius:5px; cursor:pointer; font-size:200px; overflow:hidden;}
+        .list-controlls a{float:left; display:block; width:10px; height:10px; margin:5px; background:blue; border-radius:5px; cursor:pointer; font-size:0;}
         .list-controlls .control-on{background: red}
         
     </style>
@@ -101,7 +101,7 @@
                 n = skip+1;
             }
             $(".control" + n).addClass("control-on");   // 이전 (이번에 내려오는) 컨트롤 활성화
-                slide[n - 1].show().css("top", -height + "px").stop().animate({ top: "+=" + height + "px" }, 400);
+            slide[n - 1].show().css("top", -height + "px").stop().animate({ top: "+=" + height + "px" }, 400);
             n--;
             if (sld.play == 0) {
                 sld.play = 1;
