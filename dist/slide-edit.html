@@ -90,18 +90,18 @@
             sld.n++;
         },
         prevSlide: function (skip) {    //이전으로 가기
-            var slide = sld.slide, n = sld.n, height = sld.height;
+            var slide = sld.slide, height = sld.height;
             $(".control").removeClass("control-on");  // 활성화 컨트롤 지우기
-            slide[n].show().css("top", "0").stop().animate({ top: "+=" + height + "px" }, 400);
+            slide[sld.n].show().css("top", "0").stop().animate({ top: "+=" + height + "px" }, 400);
             if (skip == undefined) {    // control 안눌렀을 때
-                n = (n == 0) ? length-1 : n;
-                $(".control" + n).addClass("control-on");   // 이전 (이번에 내려오는) 컨트롤 활성화
-                slide[n - 1].show().css("top", -height + "px").stop().animate({ top: "+=" + height + "px" }, 400);
-                n--;
+                sld.n = (sld.n == 0) ? sld.length : sld.n;
+                $(".control" + sld.n).addClass("control-on");   // 이전 (이번에 내려오는) 컨트롤 활성화
+                slide[sld.n - 1].show().css("top", -height + "px").stop().animate({ top: "+=" + height + "px" }, 400);
+                sld.n--;
             } else {
                 $(".control" + (skip+1)).addClass("control-on");   // 이전 (이번에 내려오는) 컨트롤 활성화
                 slide[skip].show().css("top", -height + "px").stop().animate({ top: "+=" + height + "px" }, 400);
-                n = skip;
+                sld.n = skip;
             }
             if (sld.play == 0) {
                 sld.play = 1;
@@ -111,15 +111,15 @@
             sld.resetSlide(true);
         },
         nextSlide: function (skip) {     //다음으로 가기
-            var slide = sld.slide, n = sld.n, height = sld.height;
+            var slide = sld.slide, height = sld.height;
             $(".control").removeClass("control-on");  // 활성화 컨트롤 지우기
-            slide[n].show().css("top", "0").stop().animate({ top: "-=" + height + "px" }, 400);
+            slide[sld.n].show().css("top", "0").stop().animate({ top: "-=" + height + "px" }, 400);
             if (skip == undefined) {
                 sld.nextAni();
             } else {  //control 눌렀을 때(가고자 하는 페이지 있을 때)
                 $(".control" + (skip+1)).addClass("control-on");   // 이전 (이번에 올라오는) 컨트롤 활성화
                 slide[skip].show().css("top", height + "px").stop().animate({ top: "-=" + height + "px" }, 400);
-                n = skip;
+                sld.n = skip;
             }
             sld.hideSlide();
             sld.resetSlide(true);
@@ -141,13 +141,13 @@
             sld.hideSlide();
         },
         controlSlide: function (control) {
-            var go = control - 1, n = sld.n;
-            if (n == go) {  //현재 페이지와 같은 control 누르면
+            var go = control - 1;
+            if (sld.n == go) {  //현재 페이지와 같은 control 누르면
                 sld.resetSlide(true)    //멈췄다가 시작
             } else {     //다른 control 누르면
-                if (n < go) {   //현재보다 후 페이지일 시
+                if (sld.n < go) {   //현재보다 후 페이지일 시
                     sld.nextSlide(go);
-                } else if (n > go) {   //현재보다 전 페이지일 시
+                } else if (sld.n > go) {   //현재보다 전 페이지일 시
                     sld.prevSlide(go);
                 }
             };
