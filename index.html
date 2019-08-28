@@ -2,12 +2,22 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="css/canvas.css">
+        <style>
+        .fixed { position:fixed; width:100%; bottom:0;}
+        .fixed:after { display:block; clear:both; content:"";}
+        .fixed .btn01, .fixed .btn02 { float:left; width:50%; height:calc(env(safe-area-inset-bottom) + 57px); background:#bbb; line-height:57px; color:#fff; font-size:16px; border:0;}
+        .fixed .btn02 { border-left:1px solid #e2e2e2;}
+        </style>
     </head>
     <body>
-        <h1>Canvas Exercise</h1>
+<!--         <h1>Canvas Exercise</h1>
         <canvas id="mainCanvas"></canvas>
         <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.11.5/paper-full.min.js"></script>
-        <script src="js/canvas.js"></script>
+        <script src="js/canvas.js"></script> -->
+        <div class="fixed">
+          <button class="btn01">취소</button>
+          <button class="btn02">확인</button>
+        </div>
     </body>
 </html>
